@@ -1,6 +1,62 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+_APPS = {
+    "Basic editors" : [
+        "gedit",
+        "cmake",
+        "qtcreator"
+    ],
+    "GNOME" : [
+        "gnome-tweaks",
+        "gnome-clocks",
+        "gnome-shell-extensions",
+        "chrome-gnome-shell"
+    ],
+    "Media" : [
+        "gimp",
+        "kolourpaint",
+        "eog",
+        "vlc"
+    ],
+    "Latex" : [
+        "texlive-full"
+    ],
+    "System" : [
+        "gparted",
+        "htop"
+    ],
+    "Android" : [
+        "openjdk-11-jdk",
+        "scrcpy"
+    ],
+    "Extensions" : [
+        "gir1.2-gtop-2.0",
+        "gir1.2-nm-1.0",
+        "gir1.2-clutter-1.0",
+        "gnome-system-monitor"
+    ],
+    "Utils" : [
+        "git-lfs",
+        "screen",
+        "wine"
+    ]
+}
+
+_PIPS = {
+    "Math" : [
+        "numpy",
+        "matplotlib"
+    ],
+    "Astro" : [
+        "astropy",
+        "astroquery",
+        "astroplan",
+        "pytest-astropy"
+    ]
+}
+
+
 import argparse
 import subprocess
 import sys
@@ -80,55 +136,16 @@ def _run_parallel(cmds, asRoot = False):
     pass
 
 
-def apt_install(apps, yes="-y"):
-    _apt = ["sudo", "apt", yes] + apps
-    _run(_apt)
-
-
-def pip_install(packages):
-    _pip = ["pip", "install"] + packages
-    _run(_pip)
-
-_APPS = {
-    "basic editors" : [
-        "gedit",
-        "cmake",
-        "qtcreator"
-    ],
-    "GNOME" : [
-        "gnome-tweaks",
-        "gnome-clocks",
-        "gnome-shell-extensions",
-        "chrome-gnome-shell"
-    ]
-}
 def install_all_apps(args):
     for key, value in _APPS.items():
-        _run_batch(value)
-    return
-    _apps = ["gedit", "cmake", "qtcreator"]
-    apt_install(_apps)
-    _apps = ["gnome-tweaks", "gnome-clocks", "gnome-shell-extensions", "chrome-gnome-shell"]
-    apt_install(_apps)
-    _apps = ["gimp", "kolourpaint", "eog", "vlc"]
-    apt_install(_apps)
-    _apps = ["texlive-full"]
-    apt_install(_apps)
-    _apps = ["gparted", "htop"]
-    apt_install(_apps)
-    _apps = ["openjdk-11-jdk", "scrcpy"]
-    apt_install(_apps)
-    _apps = ["gir1.2-gtop-2.0", "gir1.2-nm-1.0", "gir1.2-clutter-1.0", "gnome-system-monitor"]
-    apt_install(_apps)
-    _apps = ["git-lfs", "screen", "wine"]
-    apt_install(_apps)
+        log.i("Install: " + key)
+        _run_batch([ ["sudo", "apt", "-y", "install", v] for v in value ])
 
 
 def pip_all_packages(args):
-    _mat_packages = ["numpy", "matplotlib"]
-    pip_install(_mat_packages)
-    _astro_packages = ["astropy", "astroquery", "astroplan", "pytest-astropy"]
-    pip_install(_astro_packages)
+    for key, value in _PIPS.items():
+        log.i("Install: " + key)
+        _run_batch([ ["pip", "install", v] for v in value ])
 
 
 def install_google_chrome(args):
@@ -140,15 +157,8 @@ def install_google_chrome(args):
     _run(_fix)
 
 
-
-
 if __name__ == '__main__':
     args = parseArgs()
-    _run_batch([["ls"], ["ls", "Q"], ["ls", "-la"]])
-    log.p("   ***   ")
-    _run_batch([["ls"], ["ls", "Q"], ["ls", "-la"]], strict=True)
-    log.p("   ***   ")
-    _run_batch([["ls"], ["cd", "Q"], ["ls", "-la"]], strict=True)
+    install_all_apps(args)
+    pip_all_packages(args)
     log.print()
-    #install_all_apps(args)
-    #pip_all_packages(args)
