@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sudo apt update
+sudo apt upgrade
+sudo apt -y install vim git build-essential
+sudo apt -y install python3 python3-pip python-is-python3
+sudo apt update
+sudo apt upgrade
